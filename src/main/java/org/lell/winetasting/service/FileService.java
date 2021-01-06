@@ -24,7 +24,7 @@ public class FileService {
 		try (final FileOutputStream fileOutputStream = new FileOutputStream(filename)) {
 			fileOutputStream.write(multipartFile.getBytes());
 			final File file = new File(filename);
-			logger.info("File path " + file.getAbsolutePath());
+			logger.info("File path for new file {} ", file.getAbsolutePath());
 			return file;
 		}
 	}

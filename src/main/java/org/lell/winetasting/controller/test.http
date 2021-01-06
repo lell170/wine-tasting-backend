@@ -1,0 +1,15 @@
+POST http://localhost/api/wine/create
+Content-Type: application/json
+
+{
+  "name": "Aechholt",
+  "grape": "Frühburgunder",
+  "countryCode": "DE",
+  "type": "RED",
+  "description": "Lorem ipsum dolor...",
+  "year": "2018",
+  "wineMaker": "Fuchs-Jacobus",
+  "picture": {}
+}
+
+###

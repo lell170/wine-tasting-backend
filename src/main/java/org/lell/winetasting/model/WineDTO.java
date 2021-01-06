@@ -1,12 +1,10 @@
 package org.lell.winetasting.model;
 
-import java.io.File;
-
 public class WineDTO {
 
 	private long id;
 	private String name;
-	private String fileName;
+	private String pictureFileName;
 	private String grape;
 	private String creationDate;
 	private String changeDate;
@@ -32,12 +30,12 @@ public class WineDTO {
 		this.name = name;
 	}
 
-	public String getFileName() {
-		return fileName;
+	public String getPictureFileName() {
+		return pictureFileName;
 	}
 
-	public void setFileName(final String fileName) {
-		this.fileName = fileName;
+	public void setPictureFileName(final String pictureFileName) {
+		this.pictureFileName = pictureFileName;
 	}
 
 	public String getGrape() {
@@ -106,7 +104,7 @@ public class WineDTO {
 
 	@Override
 	public String toString() {
-		return "WineDTO{" + "id=" + id + ", name='" + name + '\'' + ", fileName='" + fileName + '\'' + ", grape='" + grape +
+		return "WineDTO{" + "id=" + id + ", name='" + name + '\'' + ", fileName='" + pictureFileName + '\'' + ", grape='" + grape +
 				'\'' + ", creationDate=" + creationDate + ", changeDate=" + changeDate + ", countryCode='" + countryCode + '\'' +
 				", type='" + type + '\'' + ", description='" + description + '\'' + ", year='" + year + '\'' + ", wineMaker='" +
 				wineMaker + '\'';

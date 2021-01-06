@@ -2,6 +2,7 @@ package org.lell.winetasting.service;
 
 import com.google.common.collect.Streams;
 import com.google.gson.Gson;
+import org.apache.logging.log4j.util.Strings;
 import org.lell.winetasting.model.CountryCode;
 import org.lell.winetasting.model.Type;
 import org.lell.winetasting.model.Wine;
@@ -21,7 +22,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,7 +31,6 @@ public class WineService {
 	private static final Logger logger = LoggerFactory.getLogger(WineService.class);
 	private final WineRepository wineRepository;
 	private final FileService fileService;
-	private final static Gson GSON = new Gson();
 	private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmssSS");
 
 	@Value("#{${pictures.path}}")
@@ -47,12 +46,12 @@ public class WineService {
 	}
 
 	public void addImageToWine(final File picture, final Wine wine) throws IOException {
-		final String fileName = LocalDateTime.now().format(DATE_TIME_FORMATTER) + "_" + wine.getId() + "_.jpg";
+		final String fileName = LocalDateTime.now().format(DATE_TIME_FORMATTER) + "_" + wine.getId() + ".jpg";
 		final Path target = Paths.get(imagePath + "/" + fileName);
 		logger.info("try to save file {} into path {}", picture.getAbsolutePath(), target);
 		Files.move(picture.toPath(), target);
 
-		wine.setFileName(fileName);
+		wine.setPictureFileName(fileName);
 	}
 
 	public Wine parseDTO(final WineDTO wineDTO) {
@@ -64,7 +63,7 @@ public class WineService {
 		}
 		wine.setChangeDate(LocalDateTime.now());
 		wine.setWineMaker(wineDTO.getWineMaker());
-		wine.setFileName(wineDTO.getFileName());
+		wine.setPictureFileName(wineDTO.getPictureFileName());
 		wine.setDescription(wineDTO.getDescription());
 		wine.setCountryCode(CountryCode.valueOf(wineDTO.getCountryCode()));
 		wine.setGrape(wineDTO.getGrape());
@@ -76,37 +75,43 @@ public class WineService {
 		return wine;
 	}
 
-	public WineDTO getWineDtoFromJson(final String wineDtoAsJson) {
-		return GSON.fromJson(wineDtoAsJson, WineDTO.class);
-	}
-
-	public void updateOrCreate(final MultipartFile multipartFile, final String wineDtoAsString) throws IOException {
-		final WineDTO wineDTO = this.getWineDtoFromJson(wineDtoAsString);
-		final Wine wine = this.parseDTO(wineDTO);
-
-		if (!Objects.requireNonNull(multipartFile.getOriginalFilename()).isBlank()) {
-			logger.info("multipartFile file name is detected {}",  multipartFile.getOriginalFilename());
-			final boolean imageChanged = this.isImageChanged(wine.getFileName(), multipartFile.getName());
-			if (imageChanged) {
-				this.saveNewImage(multipartFile, wine);
-			}
-		}
-		this.saveWine(wine);
-	}
-
 	public void saveNewImage(final MultipartFile multipartFile, final Wine wine) throws IOException {
 		final File file = fileService.createNewFileByMultipartFile(multipartFile, multipartFile.getOriginalFilename());
 		this.addImageToWine(file, wine);
 	}
 
-	private void saveWine(final Wine wine) {
+	public void updateWine(final WineDTO wineDTO) {
+		final Wine wine = this.parseDTO(wineDTO);
+		this.saveWine(wine);
+	}
+
+	public String updatePicture(final MultipartFile multipartFile, final int id) throws IOException {
+		final Optional<Wine> byId = wineRepository.findById((long) id);
+		if (byId.isPresent()) {
+			final Wine wine = byId.get();
+			final boolean imageChanged = this.isImageChanged(wine.getPictureFileName(), multipartFile.getName());
+			if (imageChanged) {
+				this.saveNewImage(multipartFile, wine);
+				this.saveWine(wine);
+			}
+			return wine.getPictureFileName();
+		}
+		return Strings.EMPTY;
+	}
+
+	public long createWine(final WineDTO wineDTO) {
+		final Wine wine = this.parseDTO(wineDTO);
+		return this.saveWine(wine);
+	}
+
+	private long saveWine(final Wine wine) {
 		if (wine.getCreationDate() == null) {
 			wine.setCreationDate(LocalDateTime.now());
 		}
-		wineRepository.save(wine);
+		return wineRepository.save(wine).getId();
 	}
 
-	// here I used something from java 12 :)
+	// here I used something from java 12 :) (Files.mismatch)
 	private boolean isImageChanged(final String formFileName, final String existingFileName) throws IOException {
 		final Optional<File> fileObjForFormName = fileService.getFileByExistingFileName(formFileName);
 		final Optional<File> fileObjForExistingName = fileService.getFileByExistingFileName(existingFileName);

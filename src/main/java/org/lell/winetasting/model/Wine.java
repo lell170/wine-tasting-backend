@@ -17,7 +17,7 @@ public class Wine {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	private String fileName;
+	private String pictureFileName;
 	private String grape;
 	private LocalDateTime creationDate;
 	private LocalDateTime changeDate;
@@ -51,12 +51,12 @@ public class Wine {
 		this.name = name;
 	}
 
-	public String getFileName() {
-		return fileName;
+	public String getPictureFileName() {
+		return pictureFileName;
 	}
 
-	public void setFileName(final String fileName) {
-		this.fileName = fileName;
+	public void setPictureFileName(final String fileName) {
+		this.pictureFileName = fileName;
 	}
 
 	public String getGrape() {
@@ -125,7 +125,7 @@ public class Wine {
 
 	@Override
 	public String toString() {
-		return "Wine{" + "id=" + id + ", name='" + name + '\'' + ", fileName='" + fileName + '\'' + ", grape='" + grape + '\'' +
+		return "Wine{" + "id=" + id + ", name='" + name + '\'' + ", fileName='" + pictureFileName + '\'' + ", grape='" + grape + '\'' +
 				", importDate=" + creationDate + ", changeDate=" + changeDate + ", countryCode=" + countryCode + ", type=" + type +
 				", description='" + description + '\'' + ", year='" + year + '\'' + ", wineMaker='" + wineMaker + '\'' + '}';
 	}
