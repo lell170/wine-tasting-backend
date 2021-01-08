@@ -6,7 +6,7 @@ import org.lell.winetasting.repository.WineRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -18,11 +18,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-@Component
-public class PictureService {
+@Service
+public final class PictureService {
 
     private static final Logger logger = LoggerFactory.getLogger(PictureService.class);
-    private final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmssSS");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmssSS");
 
     private final FileService fileService;
     private final WineRepository wineRepository;
@@ -48,11 +48,10 @@ public class PictureService {
     }
 
     public String updatePicture(final MultipartFile multipartFile, final long id) throws IOException {
-        final Optional<Wine> byId = wineRepository.findById((long) id);
+        final Optional<Wine> byId = wineRepository.findById(id);
 
         if (byId.isPresent()) {
             final Wine wine = byId.get();
-            System.out.println("image is changed " + this.isImageChanged(multipartFile, wine.getPictureFileName()));
             final boolean imageChanged = this.isImageChanged(multipartFile, wine.getPictureFileName());
             if (imageChanged) {
                 this.saveNewPicture(multipartFile, wine);
@@ -73,7 +72,7 @@ public class PictureService {
         final Optional<File> existingPicture = fileService.getFileByPath(existingPictureFile);
 
         if (existingPicture.isPresent()) {
-            return !(Files.mismatch(tmpFileFromMultipart.toPath(), existingPicture.get().toPath()) == -1L);
+            return Files.mismatch(tmpFileFromMultipart.toPath(), existingPicture.get().toPath()) != -1L;
         }
 
         return true;

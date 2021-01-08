@@ -1,6 +1,6 @@
 package org.lell.winetasting.model;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,18 +9,21 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 @Entity
-public class Wine {
+public final class Wine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     private String name;
     private String pictureFileName;
     private String grape;
-    private LocalDateTime creationDate;
-    private LocalDateTime changeDate;
+
+    private Date created;
+    private Date updated;
 
     @Enumerated(EnumType.STRING)
     private CountryCode countryCode;
@@ -32,14 +35,24 @@ public class Wine {
     private String wineMaker;
 
     public Wine() {
-
+        // default constructor
     }
 
-    public Long getId() {
+    @PrePersist
+    protected void onCreate() {
+        created = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = new Date();
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
+    public void setId(final long id) {
         this.id = id;
     }
 
@@ -67,20 +80,20 @@ public class Wine {
         this.grape = grape;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
+    public Date getCreated() {
+        return created;
     }
 
-    public void setCreationDate(final LocalDateTime importDate) {
-        this.creationDate = importDate;
+    public void setCreated(final Date importDate) {
+        this.created = importDate;
     }
 
-    public LocalDateTime getChangeDate() {
-        return changeDate;
+    public Date getUpdated() {
+        return updated;
     }
 
-    public void setChangeDate(final LocalDateTime changeDate) {
-        this.changeDate = changeDate;
+    public void setUpdated(final Date updated) {
+        this.updated = updated;
     }
 
     public CountryCode getCountryCode() {
@@ -126,7 +139,7 @@ public class Wine {
     @Override
     public String toString() {
         return "Wine{" + "id=" + id + ", name='" + name + '\'' + ", fileName='" + pictureFileName + '\'' + ", grape='" + grape + '\'' +
-                ", importDate=" + creationDate + ", changeDate=" + changeDate + ", countryCode=" + countryCode + ", type=" + type +
+                ", importDate=" + created + ", changeDate=" + updated + ", countryCode=" + countryCode + ", type=" + type +
                 ", description='" + description + '\'' + ", year='" + year + '\'' + ", wineMaker='" + wineMaker + '\'' + '}';
     }
 }

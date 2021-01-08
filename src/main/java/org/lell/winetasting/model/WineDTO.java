@@ -1,13 +1,13 @@
 package org.lell.winetasting.model;
 
-public class WineDTO {
+public final class WineDTO {
 
     private long id;
     private String name;
     private String pictureFileName;
     private String grape;
-    private String creationDate;
-    private String changeDate;
+    private String created;
+    private String updated;
     private String countryCode;
     private String type;
     private String description;
@@ -86,26 +86,27 @@ public class WineDTO {
         this.wineMaker = wineMaker;
     }
 
-    public String getCreationDate() {
-        return creationDate;
+    public String getCreated() {
+        return created;
     }
 
-    public void setCreationDate(final String creationDate) {
-        this.creationDate = creationDate;
+    public void setCreated(final String created) {
+        this.created = created;
     }
 
-    public String getChangeDate() {
-        return changeDate;
+    public String getUpdated() {
+        return updated;
     }
 
-    public void setChangeDate(final String changeDate) {
-        this.changeDate = changeDate;
+    public void setUpdated(final String updated) {
+        this.updated = updated;
     }
 
     @Override
     public String toString() {
-        return "WineDTO{" + "id=" + id + ", name='" + name + '\'' + ", fileName='" + pictureFileName + '\'' + ", grape='" + grape + '\'' +
-                ", creationDate=" + creationDate + ", changeDate=" + changeDate + ", countryCode='" + countryCode + '\'' + ", type='" +
-                type + '\'' + ", description='" + description + '\'' + ", year='" + year + '\'' + ", wineMaker='" + wineMaker + '\'';
+        return "WineDTO{" + "id=" + id + ", name='" + name + '\'' + ", pictureFileName='" + pictureFileName + '\'' + ", grape='" + grape +
+                '\'' + ", created='" + created + '\'' + ", updated='" + updated + '\'' + ", countryCode='" + countryCode + '\'' +
+                ", type='" + type + '\'' + ", description='" + description + '\'' + ", year='" + year + '\'' + ", wineMaker='" + wineMaker +
+                '\'' + '}';
     }
 }

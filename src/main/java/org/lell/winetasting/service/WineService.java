@@ -6,18 +6,18 @@ import org.lell.winetasting.model.Type;
 import org.lell.winetasting.model.Wine;
 import org.lell.winetasting.model.WineDTO;
 import org.lell.winetasting.repository.WineRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
-public class WineService {
+@Service
+public final class WineService {
 
-    private static final Logger logger = LoggerFactory.getLogger(WineService.class);
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 
     private final WineRepository wineRepository;
 
@@ -25,18 +25,17 @@ public class WineService {
         this.wineRepository = wineRepository;
     }
 
-    public List<Wine> getAllWines() {
-        return Streams.stream(wineRepository.findByOrderByIdAsc()).collect(Collectors.toList());
+    public List<WineDTO> getAllWines() {
+        return Streams.stream(wineRepository.findByOrderByIdAsc()).map(this::convertWine).collect(Collectors.toList());
     }
 
-    public Wine parseDTO(final WineDTO wineDTO) {
+    public Wine convertWineDto(final WineDTO wineDTO) throws ParseException {
         final Wine wine = new Wine();
-        if (wineDTO.getCreationDate() != null) {
-            wine.setCreationDate(LocalDateTime.parse(wineDTO.getCreationDate()));
-        } else {
-            wine.setCreationDate(LocalDateTime.now());
+
+        if (wineDTO.getCreated() != null) {
+            final Date created = SIMPLE_DATE_FORMAT.parse(wineDTO.getCreated());
+            wine.setCreated(created);
         }
-        wine.setChangeDate(LocalDateTime.now());
         wine.setWineMaker(wineDTO.getWineMaker());
         wine.setPictureFileName(wineDTO.getPictureFileName());
         wine.setDescription(wineDTO.getDescription());
@@ -50,20 +49,38 @@ public class WineService {
         return wine;
     }
 
-    public void updateWine(final WineDTO wineDTO) {
-        final Wine wine = this.parseDTO(wineDTO);
-        this.saveWine(wine);
+    public WineDTO convertWine(final Wine wine) {
+        final WineDTO wineDto = new WineDTO();
+
+        if (wine.getCreated() != null) {
+            wineDto.setCreated(convertDate(wine.getCreated()));
+        }
+        if (wine.getUpdated() != null) {
+            wineDto.setUpdated(convertDate(wine.getUpdated()));
+        }
+        wineDto.setWineMaker(wine.getWineMaker());
+        wineDto.setPictureFileName(wine.getPictureFileName());
+        wineDto.setDescription(wine.getDescription());
+        wineDto.setCountryCode(wine.getCountryCode().name());
+        wineDto.setGrape(wine.getGrape());
+        wineDto.setId(wine.getId());
+        wineDto.setName(wine.getName());
+        wineDto.setYear(wine.getYear());
+        wineDto.setType(wine.getType().name());
+
+        return wineDto;
     }
 
-    public long createWine(final WineDTO wineDTO) {
-        final Wine wine = this.parseDTO(wineDTO);
+    public long createWine(final WineDTO wineDTO) throws ParseException {
+        final Wine wine = this.convertWineDto(wineDTO);
         return this.saveWine(wine);
     }
 
     public long saveWine(final Wine wine) {
-        if (wine.getCreationDate() == null) {
-            wine.setCreationDate(LocalDateTime.now());
-        }
         return wineRepository.save(wine).getId();
+    }
+
+    private String convertDate(final Date date) {
+        return SIMPLE_DATE_FORMAT.format(date);
     }
 }

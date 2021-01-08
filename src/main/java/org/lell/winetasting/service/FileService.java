@@ -2,7 +2,7 @@ package org.lell.winetasting.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -12,8 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-@Component
-public class FileService {
+@Service
+public final class FileService {
 
     private static final Logger logger = LoggerFactory.getLogger(FileService.class);
 
