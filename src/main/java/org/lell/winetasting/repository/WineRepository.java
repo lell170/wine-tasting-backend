@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WineRepository extends CrudRepository<Wine, Long> {
-	Iterable<Wine> findByOrderByIdAsc();
+
+    Iterable<Wine> findByOrderByIdAsc();
 }
 
