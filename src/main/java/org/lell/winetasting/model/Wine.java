@@ -1,5 +1,7 @@
 package org.lell.winetasting.model;
 
+import com.google.common.base.Objects;
+
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -141,5 +143,24 @@ public final class Wine {
         return "Wine{" + "id=" + id + ", name='" + name + '\'' + ", fileName='" + pictureFileName + '\'' + ", grape='" + grape + '\'' +
                 ", importDate=" + created + ", changeDate=" + updated + ", countryCode=" + countryCode + ", type=" + type +
                 ", description='" + description + '\'' + ", year='" + year + '\'' + ", wineMaker='" + wineMaker + '\'' + '}';
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Wine wine = (Wine) o;
+        return id == wine.id && Objects.equal(name, wine.name) && Objects.equal(pictureFileName, wine.pictureFileName) &&
+                Objects.equal(grape, wine.grape) && countryCode == wine.countryCode && type == wine.type &&
+                Objects.equal(description, wine.description) && Objects.equal(year, wine.year) && Objects.equal(wineMaker, wine.wineMaker);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, name, pictureFileName, grape, created, updated, countryCode, type, description, year, wineMaker);
     }
 }

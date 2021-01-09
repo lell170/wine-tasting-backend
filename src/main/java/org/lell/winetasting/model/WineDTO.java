@@ -1,5 +1,7 @@
 package org.lell.winetasting.model;
 
+import com.google.common.base.Objects;
+
 public final class WineDTO {
 
     private long id;
@@ -108,5 +110,25 @@ public final class WineDTO {
                 '\'' + ", created='" + created + '\'' + ", updated='" + updated + '\'' + ", countryCode='" + countryCode + '\'' +
                 ", type='" + type + '\'' + ", description='" + description + '\'' + ", year='" + year + '\'' + ", wineMaker='" + wineMaker +
                 '\'' + '}';
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final WineDTO wineDTO = (WineDTO) o;
+        return id == wineDTO.id && Objects.equal(name, wineDTO.name) && Objects.equal(pictureFileName, wineDTO.pictureFileName) &&
+                Objects.equal(grape, wineDTO.grape) && Objects.equal(countryCode, wineDTO.countryCode) &&
+                Objects.equal(type, wineDTO.type) && Objects.equal(description, wineDTO.description) && Objects.equal(year, wineDTO.year) &&
+                Objects.equal(wineMaker, wineDTO.wineMaker);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, name, pictureFileName, grape, created, updated, countryCode, type, description, year, wineMaker);
     }
 }
