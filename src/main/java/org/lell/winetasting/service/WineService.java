@@ -26,7 +26,8 @@ public final class WineService {
     }
 
     public List<WineDTO> getAllWines() {
-        return Streams.stream(wineRepository.findByOrderByIdAsc()).map(this::convertWine).collect(Collectors.toList());
+        return Streams.stream(wineRepository.findByOrderByIdAsc()).map(this::convertWine)
+                .collect(Collectors.toList());
     }
 
     public Wine convertWineDto(final WineDTO wineDTO) throws ParseException {

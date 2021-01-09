@@ -41,27 +41,30 @@ public final class WineController {
     }
 
     @PostMapping(path = "/create")
-    public long createWine(@RequestBody final WineDTO wineDTO) throws ParseException {
+    public ResponseEntity<Long> createWine(@RequestBody final WineDTO wineDTO) throws ParseException {
         logger.info("received http request CREATE new wine {} ", wineDTO);
         if (wineDTO.getId() != 0) {
             logger.error("Create Wine Data: Given object has an existing ID! Otherwise use the update endpoint!");
             throw new IllegalArgumentException();
         }
-        return wineService.createWine(wineDTO);
+        final long id = wineService.createWine(wineDTO);
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
     @PutMapping(path = "/update/{id}/json")
-    public void updateWineData(@RequestBody final WineDTO wineDTO, @PathVariable("id") final long id) throws ParseException {
+    public ResponseEntity<Long> updateWineData(@RequestBody final WineDTO wineDTO, @PathVariable("id") final long id) throws ParseException {
         if (wineDTO.getId() == 0) {
-            logger.error("Update Wine Data: wine id for update is not given!");
-            throw new IllegalArgumentException();
+            logger.error("wine id for update is not given!");
+            throw new IllegalArgumentException("an error occurred while updating the data. id is not given");
         }
         if (wineDTO.getId() != id) {
-            logger.error("Update Wine Data: id from wineDto doesn't match id from PathVariable!");
-            throw new IllegalArgumentException();
+            logger.error("id {} from wineDto doesn't match id {} from PathVariable!", wineDTO.getId(), id);
+            throw new IllegalArgumentException("an error occurred while updating the data: id doesnt match path variable");
         }
         logger.info("received http request UPDATE existing wine with id {}", wineDTO.getId());
-        wineService.saveWine(wineService.convertWineDto(wineDTO));
+        final long wineId = wineService.saveWine(wineService.convertWineDto(wineDTO));
+
+        return new ResponseEntity<>(wineId, HttpStatus.OK);
     }
 
     @PutMapping(path = "/update/{id}/picture")
