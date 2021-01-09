@@ -44,15 +44,16 @@ public final class WineController {
     public ResponseEntity<Long> createWine(@RequestBody final WineDTO wineDTO) throws ParseException {
         logger.info("received http request CREATE new wine {} ", wineDTO);
         if (wineDTO.getId() != 0) {
-            logger.error("Create Wine Data: Given object has an existing ID! Otherwise use the update endpoint!");
-            throw new IllegalArgumentException();
+            logger.error("Given object has an existing ID {}. Otherwise use the update endpoint instead", wineDTO.getId());
+            throw new IllegalArgumentException("an error occurred while creating a new wine. id ist not empty!");
         }
         final long id = wineService.createWine(wineDTO);
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
     @PutMapping(path = "/update/{id}/json")
-    public ResponseEntity<Long> updateWineData(@RequestBody final WineDTO wineDTO, @PathVariable("id") final long id) throws ParseException {
+    public ResponseEntity<Long> updateWineData(@RequestBody final WineDTO wineDTO, @PathVariable("id") final long id)
+            throws ParseException {
         if (wineDTO.getId() == 0) {
             logger.error("wine id for update is not given!");
             throw new IllegalArgumentException("an error occurred while updating the data. id is not given");
