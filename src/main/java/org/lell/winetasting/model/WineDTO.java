@@ -15,6 +15,7 @@ public final class WineDTO {
     private String description;
     private String year;
     private String wineMaker;
+    private String overallRating;
 
     public long getId() {
         return id;
@@ -102,6 +103,14 @@ public final class WineDTO {
 
     public void setUpdated(final String updated) {
         this.updated = updated;
+    }
+
+    public String getOverallRating() {
+        return overallRating;
+    }
+
+    public void setOverallRating(final String overallRating) {
+        this.overallRating = overallRating;
     }
 
     @Override

@@ -46,6 +46,7 @@ public final class WineService {
         wine.setName(wineDTO.getName());
         wine.setYear(wineDTO.getYear());
         wine.setType(Type.valueOf(wineDTO.getType()));
+        wine.setOverallRating(wineDTO.getOverallRating());
 
         return wine;
     }
@@ -68,6 +69,7 @@ public final class WineService {
         wineDto.setName(wine.getName());
         wineDto.setYear(wine.getYear());
         wineDto.setType(wine.getType().name());
+        wineDto.setOverallRating(wine.getOverallRating());
 
         return wineDto;
     }

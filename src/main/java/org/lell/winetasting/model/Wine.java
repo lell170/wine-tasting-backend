@@ -36,6 +36,8 @@ public final class Wine {
     private String year;
     private String wineMaker;
 
+    private String overallRating;
+
     public Wine() {
         // default constructor
     }
@@ -138,6 +140,14 @@ public final class Wine {
         this.wineMaker = wineMaker;
     }
 
+    public String getOverallRating() {
+        return overallRating;
+    }
+
+    public void setOverallRating(final String overalRating) {
+        this.overallRating = overalRating;
+    }
+
     @Override
     public String toString() {
         return "Wine{" + "id=" + id + ", name='" + name + '\'' + ", fileName='" + pictureFileName + '\'' + ", grape='" + grape + '\'' +
@@ -163,4 +173,6 @@ public final class Wine {
     public int hashCode() {
         return Objects.hashCode(id, name, pictureFileName, grape, created, updated, countryCode, type, description, year, wineMaker);
     }
+
+
 }
